@@ -29,3 +29,47 @@ resource "aws_subnet" "customize-client-prv-sub" {
     Name = format("client-prv-sub-%s-${count.index + 1}", var.stack_env)
   }
 }
+
+# Setup Internet Gateway
+resource "aws_internet_gateway" "client-igw" {
+  vpc_id = aws_vpc.client-vpc.id
+  tags = {
+    Name = format("client-igw-%s", var.stack_env)
+  }
+}
+
+# Public Route Table
+resource "aws_route_table" "client-route" {
+  vpc_id = aws_vpc.client-vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.client-igw.id
+  }
+  tags = {
+    Name = format("client-public-route-%s", var.stack_env)
+  }
+}
+
+# Public Route table and Public Subnet Association
+resource "aws_route_table_association" "client-pub-rt-subnet-association" {
+  count          = length(aws_subnet.customize-client-pub-sub)
+  subnet_id      = aws_subnet.customize-client-pub-sub[count.index].id
+  route_table_id = aws_route_table.client-route.id
+}
+
+# Private Route Table
+resource "aws_route_table" "client-prv-route" {
+  vpc_id = aws_vpc.client-vpc.id
+  tags = {
+    Name = format("client-prv-route-%s", var.stack_env)
+  }
+}
+
+# Private route table and private Subnet Association
+resource "aws_route_table_association" "client-prv-rt-subnet-association" {
+  count          = length(aws_subnet.customize-client-prv-sub)
+  subnet_id      = aws_subnet.customize-client-prv-sub[count.index].id
+  route_table_id = aws_route_table.client-prv-route.id
+
+}
+
