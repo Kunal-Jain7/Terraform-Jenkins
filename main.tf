@@ -22,3 +22,15 @@ module "securitygroup" {
   vpc_id    = module.networking.vpc_id
   stack_env = local.stack_env
 }
+
+module "jenkins" {
+  source = "./jenkins"
+
+  ami_id                    = local.ami_id
+  instance_type             = local.instance_type
+  subnet_id                 = tolist(module.networking.cidr_public_subnet)[0]
+  sg_for_jenkins            = [module.securitygroup.jenkins-8080-id, module.securitygroup.jenkins-terraform-sg-id]
+  enable_public_ip_address  = true
+  user_data_install_jenkins = templatefile("./jenkins-runner-script/jenkins-installer.sh", {})
+  stack_env                 = local.stack_env
+}

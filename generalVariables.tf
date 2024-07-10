@@ -25,6 +25,16 @@ locals {
     terraform.workspace,
     var.eu_availibility_zone[var.default_value],
   )
+  instance_type = lookup(
+    var.instance_type,
+    terraform.workspace,
+    var.instance_type[var.default_value],
+  )
+  ami_id = lookup(
+    var.ami_id,
+    terraform.workspace,
+    var.ami_id[var.default_value],
+  )
 }
 
 variable "default_value" {
@@ -80,5 +90,24 @@ variable "eu_availibility_zone" {
     prod    = [""]
     preprod = [""]
     default = ["eu-west-1a", "eu-west-1b"]
+  }
+}
+
+variable "instance_type" {
+  description = "Type of instance required for each environment"
+  type        = map(string)
+  default = {
+    prod    = ""
+    preprod = ""
+    default = "t2.medium"
+  }
+}
+
+variable "ami_id" {
+  type = map(string)
+  default = {
+    prod    = ""
+    preprod = ""
+    default = "ami-0932dacac40965a65"
   }
 }

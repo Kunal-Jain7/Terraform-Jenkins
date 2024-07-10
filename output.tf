@@ -13,3 +13,7 @@ output "map_cidr_private_subnet" {
 output "jenkins-terraform-sg-id" {
   value = module.securitygroup.jenkins-terraform-sg-id
 }
+
+output "ec2-instance-map-ip" {
+  value = module.jenkins.ec2-instance-ip
+}
