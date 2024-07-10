@@ -15,3 +15,10 @@ module "networking" {
   cidr_private_subnet  = local.cidr_private_subnet
   stack_env            = local.stack_env
 }
+
+module "securitygroup" {
+  source = "./securitygroup"
+
+  vpc_id    = module.networking.vpc_id
+  stack_env = local.stack_env
+}
