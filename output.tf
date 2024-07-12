@@ -17,3 +17,7 @@ output "jenkins-terraform-sg-id" {
 output "ec2-instance-map-ip" {
   value = module.jenkins.ec2-instance-ip
 }
+
+output "lb-target-group-arn" {
+  value = module.lb_target_group.lb-target-group-arn
+}

@@ -34,3 +34,13 @@ module "jenkins" {
   user_data_install_jenkins = templatefile("./jenkins-runner-script/jenkins-installer.sh", {})
   stack_env                 = local.stack_env
 }
+
+module "lb_target_group" {
+  source = "./lb-target-group"
+
+  lb_target_group_port     = 8080
+  lb_target_group_protocol = "HTTP"
+  vpc_id                   = module.networking.vpc_id
+  ec2_instance_id          = module.jenkins.ec2_instance_id
+  stack_env                = local.stack_env
+}
